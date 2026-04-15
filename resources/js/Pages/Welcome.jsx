@@ -6,6 +6,9 @@ import {
     IconFlower,
     IconHeartHandshake,
     IconBrandInstagram,
+    IconBrandTiktok,
+    IconBrandWhatsapp,
+    IconMail,
     IconMapPin,
     IconPhone,
     IconShieldCheck,
@@ -166,17 +169,27 @@ export default function Welcome({ currentKey = "home" }) {
         },
     ];
 
+    const contactInfo = {
+    email: "oropadeltegal@gmail.com",
+    address: "Jl. Layur No. 08, Tegalsari, Kec. Tegal Barat, Kota Tegal, Jawa Tengah 52111",
+    hours: "Senin - Minggu, 06:00 - 21:00 WIB",
+    instagramUrl: "https://www.instagram.com/oropilatesstudio/",
+    tiktokUrl: "https://www.tiktok.com/@oropilatesstudio",
+    whatsappUrl: "https://wa.me/6282326923196",
+    mapsEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3961.267416072759!2d109.13153807480896!3d-6.858518693139926!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6fb73855438ee5%3A0x9a72d2d730a422fc!2sOro%20Padel%20Tegal!5e0!3m2!1sid!2sid!4v1773433907949!5m2!1sid!2sid",
+    };
+
     if (currentKey === "jadwal-sesi") {
         return (
             <>
                 <Head title="Jadwal Sesi | ORO Pilates Studio" />
                 <div className="min-h-screen bg-wellness-beige text-wellness-text">
                     <Navbar navItems={navItems} currentKey={currentKey} />
-                    <section className="px-4 py-14 md:px-6">
+                    <section className="px-4 py-8 md:px-6">
                         <div className="mx-auto max-w-5xl">
                             <SectionTitle
-                                eyebrow="Jadwal Sesi"
-                                title="Detail sesi pilates"
+                                // eyebrow="Jadwal Sesi"
+                                title="Detail Sesi Pilates"
                                 description="Lihat informasi lengkap sebelum bergabung ke sesi."
                             />
                             <Card className="mt-10 overflow-hidden">
@@ -220,13 +233,115 @@ export default function Welcome({ currentKey = "home" }) {
                 <Head title="Contact | ORO Pilates Studio" />
                 <div className="min-h-screen bg-wellness-beige text-wellness-text">
                     <Navbar navItems={navItems} currentKey={currentKey} />
-                    <section className="px-4 py-20 md:px-6">
-                        <div className="mx-auto max-w-3xl text-center">
+                    <section className="px-4 py-8 md:px-6">
+                        <div className="mx-auto max-w-5xl">
                             <SectionTitle
-                                eyebrow="Contact"
-                                title="Hubungi kami"
-                                description="Untuk informasi kelas dan reservasi, silakan hubungi kami melalui WhatsApp: 0823-2692-3196."
+                                // eyebrow="Jadwal Sesi"
+                                title="Contact Us"
+                                description="Hubungi kami untuk pertanyaan, konsultasi kelas, atau bantuan personal lainnya. Kami siap membantu Anda merasakan manfaat pilates dengan pengalaman terbaik."
                             />
+                        
+                        <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] mt-10">
+                            <div className="space-y-6">
+                                <article className="overflow-hidden rounded-[32px] border border-primary-100 bg-white shadow-[0_30px_80px_-40px_rgba(15,23,42,0.45)]">
+                                    <div className="rounded-3xl border border-primary-100 bg-white p-8 shadow-sm">
+                                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.18),transparent_35%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.12),transparent_30%)]" />
+                                        <div className="relative">
+                                            <p className="text-sm uppercase tracking-[0.28em] text-primary-600 font-semibold">Contact Experience</p>
+                                            <h2 className="mt-4 text-3xl font-semibold md:text-4xl">Direct Assistances</h2>
+                                            <p className="mt-4 max-w-2xl text-sm leading-relaxed  md:text-base">Hubungi Concierge kami untuk bantuan personal. Mulai dari konsultasi kelas, jadwal instruktur, hingga detail keanggotaan, kami hadir untuk memastikan pengalaman latihan terbaik Anda. </p>
+                                            <div className="mt-6 flex flex-wrap gap-3">
+                                                <a
+                                                    href={contactInfo.whatsappUrl}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-3 text-sm font-semibold text-white transition hover:brightness-95"
+                                                >
+                                                    <IconBrandWhatsapp size={20} /> Hubungi Kami
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </article>
+                                <article className="rounded-[32px] border border-primary-100 bg-white p-6 shadow-sm">
+                                    <div className="mb-5 flex items-center justify-between gap-4">
+                                        <div>
+                                            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-primary-600">Visit the studio</p>
+                                            <h3 className="mt-2 text-xl font-semibold text-wellness-text">Our tranquil location</h3>
+                                        </div>
+                                        <div className="rounded-2xl bg-wellness-beige p-3 text-primary-600">
+                                            <IconMapPin size={20} />
+                                        </div>
+                                    </div>
+                                    <div className="">
+                                        <div className="">
+                                            <iframe
+                                                title="ORO Pilates Studio Location"
+                                                src={contactInfo.mapsEmbedUrl}
+                                                className="h-[360px] w-full rounded-[20px] border-0 grayscale-[0.15] contrast-125 saturate-[0.9]"
+                                                loading="lazy"
+                                                referrerPolicy="no-referrer-when-downgrade"
+                                                allowFullScreen
+                                            />
+                                        </div>
+                                    </div>
+                                </article>
+                            </div>
+
+                            <aside className="space-y-6">
+                                <article className="rounded-[32px] border border-primary-100 bg-white p-6 shadow-sm lg:sticky lg:top-24">
+                                    
+                                    <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary-600">Business Information</p>
+                                    <div className="mt-4 rounded-[18px] border border-primary-100 bg-primary-50/60 p-5">
+                                         
+                                        <div className=" space-y-4 text-sm text-slate-700">
+                                            <div className="flex items-start gap-3">
+                                                <div className="rounded-2xl bg-white p-2.5 text-primary-700 shadow-sm"><IconMail size={18} /></div>
+                                                <div>
+                                                    <p className="font-semibold text-slate-900">Email</p>
+                                                    <a href={`mailto:${contactInfo.email}`} className="text-wellness-muted transition hover:text-primary-700">{contactInfo.email}</a>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-start gap-3">
+                                                <div className="rounded-2xl bg-white p-2.5 text-primary-700 shadow-sm"><IconMapPin size={18} /></div>
+                                                <div>
+                                                    <p className="font-semibold text-slate-900">Lokasi</p>
+                                                    <p className="text-wellness-muted">{contactInfo.address}</p>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-start gap-3">
+                                                <div className="rounded-2xl bg-white p-2.5 text-primary-700 shadow-sm"><IconClock size={18} /></div>
+                                                <div>
+                                                    <p className="font-semibold text-slate-900">Jam Operasional</p>
+                                                    <p className="text-wellness-muted">{contactInfo.hours}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p className="mt-8 text-sm font-semibold uppercase tracking-[0.24em] text-primary-600">Connect</p>
+                                    <h2 className="mt-2 text-2xl font-semibold text-slate-900">Connect dengan sosial media kami</h2>
+                                    <p className="mt-3 text-sm leading-relaxed text-wellness-muted">Ikuti update class, wellness tips, dan promo terbaru melalui Instagram dan TikTok kami.</p>
+
+                                    <div className="mt-6 grid gap-3">
+                                        <a href={contactInfo.instagramUrl} target="_blank" rel="noreferrer" className="flex items-center gap-4 rounded-3xl border border-slate-200 bg-gradient-to-r from-pink-50 via-white to-orange-50 p-4 transition hover:border-primary-200 hover:shadow-sm">
+                                            <div className="rounded-2xl bg-white p-3 text-pink-600 shadow-sm"><IconBrandInstagram size={24} /></div>
+                                            <div>
+                                                <p className="font-semibold text-slate-900">Instagram</p>
+                                                <p className="text-sm text-wellness-muted">Lihat update studio & reels terbaru</p>
+                                            </div>
+                                        </a>
+                                        <a href={contactInfo.tiktokUrl} target="_blank" rel="noreferrer" className="flex items-center gap-4 rounded-3xl border border-slate-200 bg-gradient-to-r from-slate-100 via-white to-cyan-50 p-4 transition hover:border-primary-200 hover:shadow-sm">
+                                            <div className="rounded-2xl bg-white p-3 text-slate-900 shadow-sm"><IconBrandTiktok size={24} /></div>
+                                            <div>
+                                                <p className="font-semibold text-slate-900">TikTok</p>
+                                                <p className="text-sm text-wellness-muted">Temukan video singkat tips gerakan</p>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                </article>
+                            </aside>
+                        </div>
                         </div>
                     </section>
                 </div>
@@ -255,7 +370,7 @@ export default function Welcome({ currentKey = "home" }) {
                             </p>
 
                             <div className="mt-10 flex flex-wrap gap-4">
-                                <Button as={Link} href={route("contact")}>Book A Class</Button>
+                                <Button as={Link} href={route("jadwal-sesi")}>Book A Class</Button>
                                 <Button as={Link} href={route("contact")} variant="secondary">Lihat Penawaran!</Button>
                             </div>
 
@@ -329,12 +444,12 @@ export default function Welcome({ currentKey = "home" }) {
                                         </h1>
                             
                                         <div className="mt-6 flex flex-col md:flex-row gap-3">
-                                            <Button as={Link} href={route("welcome")}>Find Your Class</Button>
+                                            <Button as={Link} href={route("jadwal-sesi")}>Lihat jadwal sesi</Button>
                                             <Link 
-                                            href={route("welcome")} 
+                                            href={route("contact")} 
                                             className="flex items-center justify-center inline-block border border-white text-white px-6 py-2 rounded-full text-sm hover:bg-gray-500"
                                             >
-                                            Book An Appointment
+                                            Hubungi Concierge kami 
                                             </Link>
                                         </div>
                                     </div>
@@ -500,7 +615,7 @@ export default function Welcome({ currentKey = "home" }) {
                                     <IconHeartHandshake size={18} />
                                 </a>
                             </div>
-                            <Button as={Link} href={route("contact")} className="mt-6 w-full bg-primary-500 text-white hover:bg-primary-700">
+                            <Button as={Link} href={route("jadwal-sesi")} className="mt-6 w-full bg-primary-500 text-white hover:bg-primary-700">
                                 Book A Class
                             </Button>
                         </div>
