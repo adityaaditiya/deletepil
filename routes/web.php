@@ -1,314 +1,53 @@
 <?php
 
-use App\Http\Controllers\Apps\CategoryController;
-use App\Http\Controllers\AppointmentSessionController;
-use App\Http\Controllers\AppointmentBookingHistoryController;
-use App\Http\Controllers\BookingController;
-use App\Http\Controllers\Apps\CashEntryController;
-use App\Http\Controllers\Apps\ClassCategoryController;
-use App\Http\Controllers\Apps\CustomerController;
 use App\Http\Controllers\Apps\LandingPageSettingController;
-use App\Http\Controllers\Apps\PaymentSettingController;
-use App\Http\Controllers\Apps\ProductController;
-use App\Http\Controllers\Apps\TransactionController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\MembershipHistoryController;
-use App\Http\Controllers\MembershipPlanController;
-use App\Http\Controllers\PermissionController;
-use App\Http\Controllers\PilatesBookingHistoryController;
-use App\Http\Controllers\PilatesClassController;
-use App\Http\Controllers\PilatesTimetableController;
-use App\Http\Controllers\PilatesAppointmentController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Reports\ProfitReportController;
-use App\Http\Controllers\Reports\AuthorizationReportController;
-use App\Http\Controllers\Reports\CashReportController;
-use App\Http\Controllers\Reports\SalesReportController;
-use App\Http\Controllers\Reports\SoldItemsReportController;
-use App\Http\Controllers\Reports\StockMutationReportController;
-use App\Http\Controllers\Reports\StudioTransactionReportController;
-use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StudioPageController;
-use App\Http\Controllers\TrainerController;
-use App\Http\Controllers\TrainerFlowController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\UserMembershipController;
-use App\Http\Controllers\UserMembershipHistoryController;
-use App\Http\Controllers\UserAppointmentController;
-use App\Http\Controllers\UserScheduleController;
-use App\Models\LandingPageSetting;
-use App\Models\MembershipPlan;
-use App\Models\Trainer;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    $landingPageSetting = LandingPageSetting::firstOrCreate([], LandingPageSetting::defaultAttributes());
-
     return Inertia::render('Welcome', [
-        'canLogin'       => Route::has('login'),
-        'canRegister'    => Route::has('register'),
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
-        'phpVersion'     => PHP_VERSION,
-        'trainers'       => Trainer::query()
-            ->forTrainerRole()
-            ->latest()
-            ->get(['id', 'name', 'photo', 'expertise']),
-        'membershipPlans' => MembershipPlan::query()
-            ->where('is_active', true)
-            ->orderBy('order_position')
-            ->orderBy('id')
-            ->get(['id', 'name', 'price', 'description', 'tag']),
-        'landingPageSetting' => $landingPageSetting,
+        'phpVersion' => PHP_VERSION,
     ]);
 })->name('welcome');
 
-Route::get('/welcome/{key}', [StudioPageController::class, 'showByKey'])->name('welcome.page');
-Route::get('/welcome/classes/{pilatesClass}', [StudioPageController::class, 'showClassDetail'])->name('welcome.class-detail');
-Route::get('/welcome/schedule/{pilatesTimetable}', [StudioPageController::class, 'showScheduleDetail'])->name('welcome.schedule-detail');
-Route::middleware('auth')->get('/welcome/schedule/{pilatesTimetable}/payment', [StudioPageController::class, 'showSchedulePayment'])->name('welcome.schedule-payment');
-Route::middleware('auth')->get('/welcome/schedule/{pilatesTimetable}/payment/drop-in-checkout', [StudioPageController::class, 'showDropInCheckout'])->name('welcome.schedule-payment.drop-in-checkout');
-Route::middleware('auth')->get('/welcome/membership-plans/{membershipPlan}', [StudioPageController::class, 'showMembershipDetail'])->name('welcome.membership-detail');
-Route::middleware('auth')->get('/welcome/membership-plans/{membershipPlan}/checkout', [StudioPageController::class, 'showMembershipCheckout'])->name('welcome.membership-checkout');
-Route::middleware('auth')->post('/welcome/membership-plans/{membershipPlan}/checkout', [StudioPageController::class, 'processMembershipCheckout'])->name('welcome.membership-checkout.process');
-Route::middleware('auth')->post('/welcome/memberships/{userMembership}/payment-proof', [StudioPageController::class, 'uploadMembershipPaymentProof'])->name('welcome.membership-checkout.upload-proof');
-Route::middleware('auth')->delete('/welcome/memberships/{userMembership}/cancel', [StudioPageController::class, 'cancelMembershipTransaction'])->name('welcome.membership-checkout.cancel-transaction');
-Route::middleware('auth')->post('/welcome/schedule/{pilatesTimetable}/payment', [StudioPageController::class, 'processSchedulePayment'])->name('welcome.schedule-payment.process');
-Route::middleware('auth')->post('/welcome/appointments/{appointment}/payment', [StudioPageController::class, 'processAppointmentLandingPayment'])->name('welcome.appointment-payment.process');
-Route::middleware('auth')->get('/welcome/appointments/{appointment}/payment/drop-in-checkout', [StudioPageController::class, 'showAppointmentDropInCheckout'])->name('welcome.appointment-payment.drop-in-checkout');
-Route::middleware('auth')->post('/welcome/appointments/bookings/{booking}/payment-proof', [StudioPageController::class, 'uploadAppointmentPaymentProof'])->name('welcome.appointment-payment.upload-proof');
-Route::middleware('auth')->delete('/welcome/appointments/bookings/{booking}/cancel', [StudioPageController::class, 'cancelAppointmentTransaction'])->name('welcome.appointment-payment.cancel-transaction');
-Route::middleware('auth')->post('/welcome/schedule/bookings/{booking}/payment-proof', [StudioPageController::class, 'uploadDropInPaymentProof'])->name('welcome.schedule-payment.upload-proof');
-Route::middleware('auth')->delete('/welcome/schedule/bookings/{booking}/cancel', [StudioPageController::class, 'cancelDropInTransaction'])->name('welcome.schedule-payment.cancel-transaction');
+Route::get('/contact', function () {
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+        'laravelVersion' => Application::VERSION,
+        'phpVersion' => PHP_VERSION,
+        'currentKey' => 'contact',
+    ]);
+})->name('contact');
 
-Route::middleware('auth')->get('/user/my-schedule', [UserScheduleController::class, 'index'])->name('user.my-schedule');
-Route::middleware('auth')->get('/user/my-appointment', [UserAppointmentController::class, 'index'])->name('user.my-appointment');
-Route::middleware('auth')->get('/user/my-memberships', [UserMembershipHistoryController::class, 'index'])->name('user.my-memberships');
-Route::middleware('auth')->get('/user/my-flow', [TrainerFlowController::class, 'index'])->name('user.my-flow');
-Route::middleware('auth')->patch('/user/my-flow/attendance', [TrainerFlowController::class, 'updateAttendance'])->name('user.my-flow.attendance');
+Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-Route::group(['prefix' => 'dashboard', 'middleware' => ['auth']], function () {
-    Route::get('/', [DashboardController::class, 'index'])->middleware(['auth', 'verified', 'permission:dashboard-access'])->name('dashboard');
-    Route::get('/permissions', [PermissionController::class, 'index'])->middleware('permission:permissions-access')->name('permissions.index');
-    // roles route
-    Route::resource('/roles', RoleController::class)
-        ->except(['create', 'edit', 'show'])
-        ->middlewareFor('index', 'permission:roles-access')
-        ->middlewareFor('store', 'permission:roles-create')
-        ->middlewareFor('update', 'permission:roles-update')
-        ->middlewareFor('destroy', 'permission:roles-delete');
-    // users route
-    Route::resource('/users', UserController::class)
+    Route::resource('studio-pages', StudioPageController::class)
+        ->except(['show'])
+        ->middleware('permission:studio-pages-access');
+
+    Route::resource('users', UserController::class)
         ->except('show')
         ->middlewareFor('index', 'permission:users-access')
         ->middlewareFor(['create', 'store'], 'permission:users-create')
         ->middlewareFor(['edit', 'update'], 'permission:users-update')
         ->middlewareFor('destroy', 'permission:users-delete');
 
-    Route::resource('categories', CategoryController::class)
-        ->middlewareFor(['index', 'show'], 'permission:categories-access')
-        ->middlewareFor(['create', 'store'], 'permission:categories-create')
-        ->middlewareFor(['edit', 'update'], 'permission:categories-edit')
-        ->middlewareFor('destroy', 'permission:categories-delete');
-    Route::resource('products', ProductController::class)
-        ->middlewareFor(['index', 'show'], 'permission:products-access')
-        ->middlewareFor(['create', 'store'], 'permission:products-create')
-        ->middlewareFor(['edit', 'update'], 'permission:products-edit')
-        ->middlewareFor('destroy', 'permission:products-delete');
-    Route::post('products/stock/tambah', [ProductController::class, 'addStock'])
-        ->middleware('permission:products-edit')
-        ->name('products.stock.add');
-    Route::post('products/stock/kurang', [ProductController::class, 'reduceStock'])
-        ->middleware('permission:products-edit')
-        ->name('products.stock.reduce');
-    Route::resource('customers', CustomerController::class)
-        ->middlewareFor(['index', 'show'], 'permission:customers-access')
-        ->middlewareFor(['create', 'store'], 'permission:customers-create')
-        ->middlewareFor(['edit', 'update'], 'permission:customers-edit')
-        ->middlewareFor('destroy', 'permission:customers-delete');
-    Route::resource('class-categories', ClassCategoryController::class)
-        ->middlewareFor(['index', 'show'], 'permission:class-categories-access')
-        ->middlewareFor(['create', 'store'], 'permission:class-categories-create')
-        ->middlewareFor(['edit', 'update'], 'permission:class-categories-edit')
-        ->middlewareFor('destroy', 'permission:class-categories-delete');
-
-    //route customer history
-    Route::get('/customers/{customer}/history', [CustomerController::class, 'getHistory'])->middleware('permission:transactions-access')->name('customers.history');
-
-    //route customer store via AJAX (no redirect)
-    Route::post('/customers/store-ajax', [CustomerController::class, 'storeAjax'])->middleware('permission:customers-create')->name('customers.storeAjax');
-
-
-    Route::resource('studio-pages', StudioPageController::class)
-        ->except(['show'])
-        ->middleware('permission:studio-pages-access');
-    Route::resource('classes', PilatesClassController::class)
-        ->except(['show'])
-        ->middleware('permission:classes-access');
-    Route::resource('appointment-sessions', AppointmentSessionController::class)
-        ->except(['show'])
-        ->middleware('permission:appointment-sessions-access');
-    Route::resource('trainers', TrainerController::class)
-        ->except(['show'])
-        ->middleware('permission:trainers-access');
-    Route::get('timetable', [PilatesTimetableController::class, 'index'])
-        ->middleware('permission:timetable-access')
-        ->name('timetable.index');
-    Route::get('timetable/create', [PilatesTimetableController::class, 'create'])
-        ->middleware('permission:timetable-access')
-        ->name('timetable.create');
-    Route::post('timetable', [PilatesTimetableController::class, 'store'])
-        ->middleware('permission:timetable-access')
-        ->name('timetable.store');
-    Route::get('timetable/{timetable}/edit', [PilatesTimetableController::class, 'edit'])
-        ->middleware('permission:timetable-access')
-        ->name('timetable.edit');
-    Route::put('timetable/{timetable}', [PilatesTimetableController::class, 'update'])
-        ->middleware('permission:timetable-access')
-        ->name('timetable.update');
-    Route::delete('timetable/{timetable}', [PilatesTimetableController::class, 'destroy'])
-        ->middleware('permission:timetable-access')
-        ->name('timetable.destroy');
-    Route::get('appointments', [PilatesAppointmentController::class, 'index'])
-        ->middleware('permission:appointments-access')
-        ->name('appointments.index');
-    Route::get('appointments/create', [PilatesAppointmentController::class, 'create'])
-        ->middleware('permission:appointments-access')
-        ->name('appointments.create');
-    Route::post('appointments', [PilatesAppointmentController::class, 'store'])
-        ->middleware('permission:appointments-access')
-        ->name('appointments.store');
-    Route::get('appointments/{appointment}/edit', [PilatesAppointmentController::class, 'edit'])
-        ->middleware('permission:appointments-access')
-        ->name('appointments.edit');
-    Route::put('appointments/{appointment}', [PilatesAppointmentController::class, 'update'])
-        ->middleware('permission:appointments-access')
-        ->name('appointments.update');
-    Route::delete('appointments/{appointment}', [PilatesAppointmentController::class, 'destroy'])
-        ->middleware('permission:appointments-access')
-        ->name('appointments.destroy');
-    Route::get('appointments/{appointment}/booking', [PilatesAppointmentController::class, 'createBooking'])
-        ->middleware('permission:appointments-access')
-        ->name('appointments.booking.create');
-    Route::post('appointments/{appointment}/booking', [PilatesAppointmentController::class, 'storeBooking'])
-        ->middleware('permission:appointments-access')
-        ->name('appointments.booking.store');
-    
-    Route::get('bookings/history', [PilatesBookingHistoryController::class, 'index'])
-        ->middleware('permission:bookings-history-access')
-        ->name('bookings.history');
-    Route::get('appointments/history', [AppointmentBookingHistoryController::class, 'index'])
-        ->middleware('permission:appointments-history-access')
-        ->name('appointments.history');
-    Route::get('appointments/{invoice}/print', [AppointmentBookingHistoryController::class, 'print'])
-        ->middleware('permission:appointments-history-access')
-        ->name('appointments.print');
-    Route::delete('appointments/{booking}/cancel', [AppointmentBookingHistoryController::class, 'cancel'])
-        ->middleware('permission:appointments-history-access')
-        ->name('appointments.cancel');
-    Route::post('appointments/{booking}/confirm-payment', [AppointmentBookingHistoryController::class, 'confirmPayment'])
-        ->middleware('permission:appointments-history-access')
-        ->name('appointments.confirm-payment');
-    Route::post('appointments/{booking}/reject-payment', [AppointmentBookingHistoryController::class, 'rejectPayment'])
-        ->middleware('permission:appointments-history-access')
-        ->name('appointments.reject-payment');
-    Route::get('bookings/{invoice}/print', [PilatesBookingHistoryController::class, 'print'])
-        ->middleware('permission:bookings-history-access')
-        ->name('bookings.print');
-    Route::delete('bookings/{booking}/cancel', [PilatesBookingHistoryController::class, 'cancel'])
-        ->middleware('permission:bookings-history-access')
-        ->name('bookings.cancel');
-    Route::post('bookings/{booking}/confirm-payment', [PilatesBookingHistoryController::class, 'confirmPayment'])
-        ->middleware('permission:bookings-history-access')
-        ->name('bookings.confirm-payment');
-    Route::post('bookings/{booking}/reject-payment', [PilatesBookingHistoryController::class, 'rejectPayment'])
-        ->middleware('permission:bookings-history-access')
-        ->name('bookings.reject-payment');
-    Route::get('bookings/create', [BookingController::class, 'create'])->name('bookings.create');
-
-    Route::resource('membership-plans', MembershipPlanController::class)
-        ->except(['show'])
-        ->middleware('permission:membership-plans-access');
-
-    Route::get('memberships/plans', [UserMembershipController::class, 'plans'])->middleware('permission:memberships-access')->name('memberships.plans');
-    Route::get('memberships/plans/{membershipPlan}/checkout', [UserMembershipController::class, 'checkout'])->middleware('permission:memberships-access')->name('memberships.checkout');
-    Route::get('memberships/customers/search', [UserMembershipController::class, 'searchCustomers'])->middleware('permission:memberships-access')->name('memberships.customers.search');
-    Route::post('memberships/plans/{membershipPlan}/activate', [UserMembershipController::class, 'activate'])->middleware('permission:memberships-access')->name('memberships.activate');
-    Route::get('memberships/my', [UserMembershipController::class, 'myMemberships'])->middleware('permission:memberships-access')->name('memberships.my');
-    Route::get('memberships/history', [MembershipHistoryController::class, 'index'])
-        ->middleware('permission:memberships-history-access')
-        ->name('memberships.history');
-    Route::get('memberships/{invoice}/print', [MembershipHistoryController::class, 'print'])
-        ->middleware('permission:memberships-history-access')
-        ->name('memberships.print');
-    Route::delete('memberships/{userMembership}/cancel', [MembershipHistoryController::class, 'cancel'])
-        ->middleware('permission:memberships-history-access')
-        ->name('memberships.cancel');
-    Route::post('memberships/{userMembership}/confirm-payment', [MembershipHistoryController::class, 'confirmPayment'])
-        ->middleware('permission:memberships-history-access')
-        ->name('memberships.confirm-payment');
-    Route::post('memberships/{userMembership}/reject-payment', [MembershipHistoryController::class, 'rejectPayment'])
-        ->middleware('permission:memberships-history-access')
-        ->name('memberships.reject-payment');
-    Route::post('bookings', [BookingController::class, 'store'])->name('bookings.store');
-    //route transaction
-    Route::get('/transactions', [TransactionController::class, 'index'])->middleware('permission:transactions-access')->name('transactions.index');
-    Route::get('/transactions/customers/search', [TransactionController::class, 'searchCustomers'])->middleware('permission:transactions-access')->name('transactions.customers.search');
-
-    //route transaction searchProduct
-    Route::post('/transactions/searchProduct', [TransactionController::class, 'searchProduct'])->middleware('permission:transactions-access')->name('transactions.searchProduct');
-
-    //route transaction addToCart
-    Route::post('/transactions/addToCart', [TransactionController::class, 'addToCart'])->middleware('permission:transactions-access')->name('transactions.addToCart');
-
-    //route transaction destroyCart
-    Route::delete('/transactions/{cart_id}/destroyCart', [TransactionController::class, 'destroyCart'])->middleware('permission:transactions-access')->name('transactions.destroyCart');
-
-    //route transaction updateCart
-    Route::patch('/transactions/{cart_id}/updateCart', [TransactionController::class, 'updateCart'])->middleware('permission:transactions-access')->name('transactions.updateCart');
-
-    //route hold transaction
-    Route::post('/transactions/hold', [TransactionController::class, 'holdCart'])->middleware('permission:transactions-access')->name('transactions.hold');
-    Route::post('/transactions/{holdId}/resume', [TransactionController::class, 'resumeCart'])->middleware('permission:transactions-access')->name('transactions.resume');
-    Route::delete('/transactions/{holdId}/clearHold', [TransactionController::class, 'clearHold'])->middleware('permission:transactions-access')->name('transactions.clearHold');
-    Route::get('/transactions/held', [TransactionController::class, 'getHeldCarts'])->middleware('permission:transactions-access')->name('transactions.held');
-
-    //route transaction store
-    Route::post('/transactions/store', [TransactionController::class, 'store'])->middleware('permission:transactions-access')->name('transactions.store');
-    Route::get('/transactions/{invoice}/print', [TransactionController::class, 'print'])->middleware('permission:transactions-access')->name('transactions.print');
-    Route::get('/transactions/history', [TransactionController::class, 'history'])->middleware('permission:transactions-access')->name('transactions.history');
-    Route::get('/transactions/my', [TransactionController::class, 'myTransactions'])->middleware('permission:my-transactions-access')->name('transactions.my');
-    Route::delete('/transactions/{transaction}/cancel', [TransactionController::class, 'cancel'])->middleware('permission:transactions-access')->name('transactions.cancel');
-    Route::get('/transactions/cash/tambah', [CashEntryController::class, 'index'])->middleware('permission:transactions-access')->defaults('type', 'in')->name('transactions.cash.in');
-    Route::post('/transactions/cash/tambah', [CashEntryController::class, 'store'])->middleware('permission:transactions-access')->defaults('type', 'in')->name('transactions.cash.in.store');
-    Route::get('/transactions/cash/ambil', [CashEntryController::class, 'index'])->middleware('permission:transactions-access')->defaults('type', 'out')->name('transactions.cash.out');
-    Route::post('/transactions/cash/ambil', [CashEntryController::class, 'store'])->middleware('permission:transactions-access')->defaults('type', 'out')->name('transactions.cash.out.store');
-
-    Route::get('/settings/payments', [PaymentSettingController::class, 'edit'])->middleware('permission:payment-settings-access')->name('settings.payments.edit');
-    Route::put('/settings/payments', [PaymentSettingController::class, 'update'])->middleware('permission:payment-settings-access')->name('settings.payments.update');
-
-    Route::get('/settings/landing-page', [LandingPageSettingController::class, 'edit'])->middleware('permission:landing-page-settings-access')->name('settings.landing-page.edit');
-    Route::put('/settings/landing-page', [LandingPageSettingController::class, 'update'])->middleware('permission:landing-page-settings-access')->name('settings.landing-page.update');
-
-    //reports
-    Route::get('/reports/sales', [SalesReportController::class, 'index'])->middleware('permission:reports-access')->name('reports.sales.index');
-    Route::get('/reports/sales/export', [SalesReportController::class, 'export'])->middleware('permission:reports-access')->name('reports.sales.export');
-    Route::get('/reports/sales/export-pdf', [SalesReportController::class, 'exportPdf'])->middleware('permission:reports-access')->name('reports.sales.export-pdf');
-    Route::get('/reports/sold-items', [SoldItemsReportController::class, 'index'])->middleware('permission:reports-access')->name('reports.sold-items.index');
-    Route::get('/reports/sold-items/export', [SoldItemsReportController::class, 'export'])->middleware('permission:reports-access')->name('reports.sold-items.export');
-    Route::get('/reports/sold-items/export-pdf', [SoldItemsReportController::class, 'exportPdf'])->middleware('permission:reports-access')->name('reports.sold-items.export-pdf');
-    Route::get('/reports/booking', [StudioTransactionReportController::class, 'booking'])->middleware('permission:reports-access')->name('reports.booking.index');
-    Route::get('/reports/appointment', [StudioTransactionReportController::class, 'appointment'])->middleware('permission:reports-access')->name('reports.appointment.index');
-    Route::get('/reports/membership', [StudioTransactionReportController::class, 'membership'])->middleware('permission:reports-access')->name('reports.membership.index');
-    Route::get('/reports/profits', [ProfitReportController::class, 'index'])->middleware('permission:profits-access')->name('reports.profits.index');
-    Route::get('/reports/profits/export', [ProfitReportController::class, 'export'])->middleware('permission:profits-access')->name('reports.profits.export');
-    Route::get('/reports/profits/export-pdf', [ProfitReportController::class, 'exportPdf'])->middleware('permission:profits-access')->name('reports.profits.export-pdf');
-    Route::get('/reports/cash', [CashReportController::class, 'index'])->middleware('permission:reports-access')->name('reports.cash.index');
-    Route::get('/reports/cash/export', [CashReportController::class, 'export'])->middleware('permission:reports-access')->name('reports.cash.export');
-    Route::get('/reports/cash/export-pdf', [CashReportController::class, 'exportPdf'])->middleware('permission:reports-access')->name('reports.cash.export-pdf');
-    Route::get('/reports/authorizations', [AuthorizationReportController::class, 'index'])->middleware('permission:reports-access')->name('reports.authorizations.index');
-    Route::get('/reports/stock-mutations', [StockMutationReportController::class, 'index'])->middleware('permission:reports-access')->name('reports.stock-mutations.index');
+    Route::get('/settings/landing-page', [LandingPageSettingController::class, 'edit'])
+        ->middleware('permission:landing-page-settings-access')
+        ->name('settings.landing-page.edit');
+    Route::put('/settings/landing-page', [LandingPageSettingController::class, 'update'])
+        ->middleware('permission:landing-page-settings-access')
+        ->name('settings.landing-page.update');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
