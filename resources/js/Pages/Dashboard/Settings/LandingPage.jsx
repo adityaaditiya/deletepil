@@ -14,13 +14,13 @@ const imageFields = [
     },
     {
         key: "schedule_background_image",
-        title: "Gambar Background Banner Menu Schedule",
-        description: "Digunakan pada section Schedule di halaman landing page.",
+        title: "Gambar Background Banner Menu Classes",
+        description: "Digunakan pada section Classes di halaman landing page.",
     },
     {
         key: "classes_background_image",
-        title: "Gambar Background Banner Menu Classes",
-        description: "Digunakan pada section Classes di halaman landing page.",
+        title: "Gambar Background Banner Menu Schedule",
+        description: "Digunakan pada section Schedule di halaman landing page.",
     },
 ];
 

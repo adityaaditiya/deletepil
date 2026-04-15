@@ -254,28 +254,7 @@ export default function Welcome({ currentKey = "home" }) {
                         </div>
                     </div>
                 </section>
-
-                {/* <section className="bg-wellness-soft px-4 py-20 md:px-6">
-                    <div className="mx-auto max-w-7xl">
-                        <SectionTitle
-                            eyebrow="Classes"
-                            title="Pilihan kelas sesuai ritme Anda"
-                            description="Mulai dari basic hingga sesi personal, semua kelas dipandu instruktur profesional bersertifikat."
-                        />
-                        <div className="mt-12 grid gap-6 md:grid-cols-2">
-                            {classTypes.map((item) => (
-                                <Card key={item.title}>
-                                    <h3 className="text-xl font-semibold">{item.title}</h3>
-                                    <p className="mt-3 text-sm text-wellness-muted">{item.desc}</p>
-                                    <div className="mt-6 flex flex-wrap gap-3 text-xs text-wellness-muted">
-                                        <span className="rounded-full bg-primary-50 px-3 py-1.5">Durasi: {item.duration}</span>
-                                        <span className="rounded-full bg-primary-50 px-3 py-1.5">Level: {item.level}</span>
-                                    </div>
-                                </Card>
-                            ))}
-                        </div>
-                    </div>
-                </section> */}
+                
                 <br />
                 <section className="py-20 mt-20">
                     <div className="relative h-[100vh] w-full">
