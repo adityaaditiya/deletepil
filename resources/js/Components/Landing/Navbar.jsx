@@ -2,6 +2,7 @@ import { Link, usePage } from "@inertiajs/react";
 import { useState } from "react";
 import { IconMenu2, IconYoga } from "@tabler/icons-react";
 import Button from "@/Components/Landing/Button";
+import { getImageUrl } from "@/Utils/imageUrl";
 
 const defaultNavItems = [
     { name: "Home", href: route("welcome") },
@@ -9,16 +10,23 @@ const defaultNavItems = [
 ];
 
 export default function Navbar({ navItems = defaultNavItems, currentKey = null }) {
-    const { auth } = usePage().props;
+    const { auth, landingPageSetting = {} } = usePage().props;
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const studioLogoImage = getImageUrl(landingPageSetting?.studio_logo_image, "landing-page");
 
     return (
         <nav className="sticky top-0 z-50 border-b border-primary-100 bg-wellness-soft/95 backdrop-blur">
             <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 md:px-6">
                 <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary-500 text-white shadow-md shadow-primary-700/20">
-                        <IconYoga size={20} />
-                    </div>
+                    {studioLogoImage ? (
+                        <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-2xl border border-primary-200 bg-white p-1 shadow-sm">
+                            <img src={studioLogoImage} alt="Logo Studio" className="h-full w-full object-contain" />
+                        </div>
+                    ) : (
+                        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary-500 text-white shadow-md shadow-primary-700/20">
+                            <IconYoga size={20} />
+                        </div>
+                    )}
                     <div>
                         <p className="text-base font-semibold">ORO Pilates Studio</p>
                         <p className="text-xs text-wellness-muted">Wellness & Movement</p>

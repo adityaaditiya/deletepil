@@ -8,6 +8,11 @@ import toast from "react-hot-toast";
 
 const imageFields = [
     {
+        key: "studio_logo_image",
+        title: "Logo Studio (Navbar Landing Page)",
+        description: "Kelola gambar logo studio untuk mengganti icon yoga yang tampil pada navbar landing page.",
+    },
+    {
         key: "hero_background_image",
         title: "Header Utama",
         description: "Kelola gambar background section Pilates Studio Premium pada halaman landing page (welcome).",
@@ -28,6 +33,7 @@ export default function LandingPage({ setting }) {
     const { flash } = usePage().props;
 
     const { data, setData, post, processing, errors } = useForm({
+        studio_logo_image: null,
         hero_background_image: null,
         schedule_background_image: null,
         classes_background_image: null,
@@ -41,6 +47,10 @@ export default function LandingPage({ setting }) {
 
     const previews = useMemo(
         () => ({
+            studio_logo_image:
+                data.studio_logo_image instanceof File
+                    ? URL.createObjectURL(data.studio_logo_image)
+                    : getImageUrl(setting?.studio_logo_image, "landing-page"),
             hero_background_image:
                 data.hero_background_image instanceof File
                     ? URL.createObjectURL(data.hero_background_image)
@@ -54,7 +64,7 @@ export default function LandingPage({ setting }) {
                     ? URL.createObjectURL(data.classes_background_image)
                     : getImageUrl(setting?.classes_background_image, "landing-page"),
         }),
-        [data.classes_background_image, data.hero_background_image, data.schedule_background_image, setting],
+        [data.classes_background_image, data.hero_background_image, data.schedule_background_image, data.studio_logo_image, setting],
     );
 
     const handleSubmit = (event) => {
@@ -96,12 +106,12 @@ export default function LandingPage({ setting }) {
                             </div>
 
                             <div>
-                                <div className="mb-4 flex h-52 w-full items-center justify-center overflow-hidden rounded-2xl border border-dashed border-slate-300 bg-slate-100 dark:border-slate-700 dark:bg-slate-800">
+                                <div className={`mb-4 flex w-full items-center justify-center overflow-hidden rounded-2xl border border-dashed border-slate-300 bg-slate-100 dark:border-slate-700 dark:bg-slate-800 ${field.key === "studio_logo_image" ? "h-36" : "h-52"}`}>
                                     {previews[field.key] ? (
                                         <img
                                             src={previews[field.key]}
                                             alt={field.title}
-                                            className="h-full w-full object-cover"
+                                            className={field.key === "studio_logo_image" ? "h-full w-full object-contain p-4" : "h-full w-full object-cover"}
                                         />
                                     ) : (
                                         <div className="text-center text-slate-400 dark:text-slate-500">
