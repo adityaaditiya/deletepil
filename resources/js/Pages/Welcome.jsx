@@ -312,40 +312,23 @@ export default function Welcome({ currentKey = "home" }) {
                             description="Tim kami menghadirkan pendekatan personal agar setiap gerakan terasa aman, efektif, dan menyenangkan."
                         />
                         <div className="mt-12 grid gap-6 md:grid-cols-3">
-                            
-                            {/* Trainer 1 */}
-                            <Card className="text-center">
-                                <img
-                                    src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1200&q=80"
-                                    alt="Nama Trainer 1"
-                                    className="mx-auto h-64 w-full rounded-2xl object-cover"
-                                />
-                                <h3 className="mt-5 text-xl font-semibold">Denia</h3>
-                                <p className="mt-2 text-sm text-wellness-muted">Pilates Specialist & Core Strength</p>
-                            </Card>
-
-                            {/* Trainer 2 */}
-                            <Card className="text-center">
-                                <img
-                                    src="https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=500&q=80"
-                                    alt="Nama Trainer 2"
-                                    className="mx-auto h-64 w-full rounded-2xl object-cover"
-                                />
-                                <h3 className="mt-5 text-xl font-semibold">Lucilla</h3>
-                                <p className="mt-2 text-sm text-wellness-muted">Rehab & Flexibility Expert</p>
-                            </Card>
-
-                            {/* Trainer 3 */}
-                            <Card className="text-center">
-                                <img
-                                    src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=500&q=80"
-                                    alt="Nama Trainer 3"
-                                    className="mx-auto h-64 w-full rounded-2xl object-cover"
-                                />
-                                <h3 className="mt-5 text-xl font-semibold">Luccy</h3>
-                                <p className="mt-2 text-sm text-wellness-muted">Yoga & Breathwork Coach</p>
-                            </Card>
-
+                            {trainers.length > 0 ? (
+                                trainers.map((trainer, index) => (
+                                    <Card className="text-center" key={trainer.id || trainer.name || index}>
+                                        <img
+                                            src={getImageUrl(trainer.photo, "trainers") || `/assets/photo/photo${(index % 5) + 1}.png`}
+                                            alt={trainer.name}
+                                            className="mx-auto h-64 w-full rounded-2xl object-cover"
+                                        />
+                                        <h3 className="mt-5 text-xl font-semibold">{trainer.name}</h3>
+                                        <p className="mt-2 text-sm text-wellness-muted">{trainer.expertise || "Trainer Pilates"}</p>
+                                    </Card>
+                                ))
+                            ) : (
+                                <Card className="text-center md:col-span-3">
+                                    <p className="text-sm text-wellness-muted">Data trainer belum tersedia. Silakan tambahkan dari dashboard.</p>
+                                </Card>
+                            )}
                         </div>
                     </div>
                 </section>
