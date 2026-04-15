@@ -38,7 +38,7 @@ export default function Navbar({ navItems = defaultNavItems, currentKey = null }
                 </div>
 
                 <div className="flex items-center gap-3">
-                    {auth?.user ? (
+                    {/* {auth?.user ? (
                         <Link href={route("dashboard")} className="hidden rounded-full border border-primary-100 bg-white px-4 py-2 text-sm font-medium text-slate-700 md:inline-flex">
                             Dashboard
                         </Link>
@@ -46,7 +46,7 @@ export default function Navbar({ navItems = defaultNavItems, currentKey = null }
                         <Button as={Link} href={route("login")} className="hidden md:inline-flex">
                             Login / Register
                         </Button>
-                    )}
+                    )} */}
 
                     <button
                         className="rounded-xl border border-primary-200 p-2.5 text-wellness-text md:hidden"
@@ -68,11 +68,11 @@ export default function Navbar({ navItems = defaultNavItems, currentKey = null }
                             </Link>
                         ))}
 
-                        {!auth?.user && (
+                        {/* {!auth?.user && (
                             <Button as={Link} href={route("login")} className="mt-2 w-full justify-center">
                                 Login / Register
                             </Button>
-                        )}
+                        )} */}
                     </div>
                 </div>
             )}
