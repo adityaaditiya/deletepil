@@ -1,5 +1,5 @@
 import { usePage } from "@inertiajs/react";
-import { IconHome2, IconUsers, IconPhoto, IconUserStar } from "@tabler/icons-react";
+import { IconHome2, IconUsers, IconPhoto, IconUserStar, IconCalendarEvent } from "@tabler/icons-react";
 import hasAnyPermission from "./Permission";
 
 function Menu() {
@@ -14,6 +14,13 @@ function Menu() {
                     href: route("studio-pages.index"),
                     active: url.startsWith("/dashboard/studio-pages"),
                     icon: <IconHome2 size={20} strokeWidth={1.5} />,
+                    permissions: hasAnyPermission(["studio-pages-access"]),
+                },
+                {
+                    title: "Kelola Jadwal Sesi",
+                    href: route("studio-sessions.index"),
+                    active: url.startsWith("/dashboard/studio-sessions"),
+                    icon: <IconCalendarEvent size={20} strokeWidth={1.5} />,
                     permissions: hasAnyPermission(["studio-pages-access"]),
                 },
             ],

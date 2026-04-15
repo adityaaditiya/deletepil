@@ -6,8 +6,10 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudioPageController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TrainerController;
+use App\Http\Controllers\StudioSessionController;
 use App\Models\LandingPageSetting;
 use App\Models\Trainer;
+use App\Models\StudioSession;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -23,6 +25,7 @@ Route::get('/', function () {
         'landingPageSetting' => LandingPageSetting::first(),
         // Mengirimkan data trainer dari database
         'trainers' => Trainer::query()->select('id', 'name', 'photo', 'expertise')->latest()->get(),
+        'studioSessions' => StudioSession::query()->latest()->get(),
     ]);
 })->name('welcome');
 
@@ -35,6 +38,7 @@ Route::get('/jadwal-sesi', function () {
         'currentKey' => 'jadwal-sesi',
         'landingPageSetting' => LandingPageSetting::first(),
         'trainers' => Trainer::query()->select('id', 'name', 'photo', 'expertise')->latest()->get(),
+        'studioSessions' => StudioSession::query()->latest()->get(),
     ]);
 })->name('jadwal-sesi');
 
@@ -47,6 +51,7 @@ Route::get('/contact', function () {
         // Tetap kirimkan data agar gambar background tidak hilang saat pindah menu
         'landingPageSetting' => LandingPageSetting::first(),
         'trainers' => Trainer::query()->select('id', 'name', 'photo', 'expertise')->latest()->get(),
+        'studioSessions' => StudioSession::query()->latest()->get(),
     ]);
 })->name('contact');
 
@@ -81,6 +86,18 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
     Route::put('/settings/landing-page', [LandingPageSettingController::class, 'update'])
         ->middleware('permission:landing-page-settings-access')
         ->name('settings.landing-page.update');
+
+    Route::get('/studio-sessions', [StudioSessionController::class, 'index'])
+        ->middleware('permission:studio-pages-access')
+        ->name('studio-sessions.index');
+
+    Route::post('/studio-sessions', [StudioSessionController::class, 'store'])
+        ->middleware('permission:studio-pages-access')
+        ->name('studio-sessions.store');
+
+    Route::put('/studio-sessions/{studioSession}', [StudioSessionController::class, 'update'])
+        ->middleware('permission:studio-pages-access')
+        ->name('studio-sessions.update');
 
     // Profile Akun
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -21,9 +21,10 @@ import Card from "@/Components/Landing/Card";
 import SectionTitle from "@/Components/Landing/SectionTitle";
 import Navbar from "@/Components/Landing/Navbar";
 import { getImageUrl } from "@/Utils/imageUrl";
+import SessionDetailCard from "@/Components/Landing/SessionDetailCard";
 
 export default function Welcome({ currentKey = "home" }) {
-    const { auth, trainers = [], membershipPlans = [], landingPageSetting = {} } = usePage().props;
+    const { auth, trainers = [], membershipPlans = [], landingPageSetting = {}, studioSessions = [] } = usePage().props;
 
     const trustBadges = ["Certified Trainers", "Small Group", "Beginner Friendly"];
     const navItems = [
@@ -133,23 +134,6 @@ export default function Welcome({ currentKey = "home" }) {
         "landing-page"
 ) || "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1200&q=80";
 
-    const sessionDetail = {
-        image: classesBackgroundImage,
-        title: "Morning Reformer Flow",
-        trainer: "Nadia Putri",
-        date: "Sabtu, 20 April 2026",
-        time: "09:00 WIB",
-        duration: "60 menit",
-        capacity: "12 peserta",
-        remaining: "3 peserta",
-        level: "Beginner - Intermediate",
-        equipment: "Reformer machine, mat, hand towel, grip socks",
-        price: "Rp175.000 / sesi",
-        paymentMethod: "Transfer Bank, QRIS, E-Wallet",
-        about: "Sesi reformer berfokus pada penguatan core, alignment postur, dan peningkatan fleksibilitas dengan tempo yang aman untuk pemula.",
-        formLink: "https://forms.gle/",
-    };
-
     const faqs = [
         {
             q: "Apakah cocok untuk pemula?",
@@ -192,34 +176,17 @@ export default function Welcome({ currentKey = "home" }) {
                                 title="Detail Sesi Pilates"
                                 description="Lihat informasi lengkap sebelum bergabung ke sesi."
                             />
-                            <Card className="mt-10 overflow-hidden">
-                                <img src={sessionDetail.image} alt={sessionDetail.title} className="h-72 w-full rounded-2xl object-cover" />
-                                <div className="mt-6 grid gap-4 text-sm text-wellness-muted md:grid-cols-2">
-                                    <p><span className="font-semibold text-wellness-text">Judul Sesi:</span> {sessionDetail.title}</p>
-                                    <p><span className="font-semibold text-wellness-text">Trainer:</span> {sessionDetail.trainer}</p>
-                                    <p><span className="font-semibold text-wellness-text">Tanggal Sesi:</span> {sessionDetail.date}</p>
-                                    <p><span className="font-semibold text-wellness-text">Jam Sesi:</span> {sessionDetail.time}</p>
-                                    <p><span className="font-semibold text-wellness-text">Durasi:</span> {sessionDetail.duration}</p>
-                                    <p><span className="font-semibold text-wellness-text">Kapasitas Peserta:</span> {sessionDetail.capacity}</p>
-                                    <p><span className="font-semibold text-wellness-text">Sisa Peserta:</span> {sessionDetail.remaining}</p>
-                                    <p><span className="font-semibold text-wellness-text">Level Sesi:</span> {sessionDetail.level}</p>
-                                    <p><span className="font-semibold text-wellness-text">Perlengkapan:</span> {sessionDetail.equipment}</p>
-                                    <p><span className="font-semibold text-wellness-text">Harga per Sesi:</span> {sessionDetail.price}</p>
-                                    <p><span className="font-semibold text-wellness-text">Metode Pembayaran:</span> {sessionDetail.paymentMethod}</p>
+                            {studioSessions.length > 0 ? (
+                                <div className="mt-10 grid gap-6">
+                                    {studioSessions.map((session) => (
+                                        <SessionDetailCard key={session.id} session={session} />
+                                    ))}
                                 </div>
-                                <div className="mt-6 rounded-2xl bg-wellness-soft p-4">
-                                    <p className="text-sm font-semibold text-wellness-text">Tentang Sesi</p>
-                                    <p className="mt-2 text-sm leading-relaxed text-wellness-muted">{sessionDetail.about}</p>
-                                </div>
-                                <a
-                                    href={sessionDetail.formLink}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="mt-6 inline-flex rounded-full bg-primary-600 px-6 py-3 text-sm font-medium text-white hover:bg-primary-700"
-                                >
-                                    Gabung Sesi
-                                </a>
-                            </Card>
+                            ) : (
+                                <Card className="mt-10">
+                                    <p className="text-sm text-wellness-muted">Belum ada jadwal sesi yang tersedia saat ini.</p>
+                                </Card>
+                            )}
                         </div>
                     </section>
                 </div>
