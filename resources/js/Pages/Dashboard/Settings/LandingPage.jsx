@@ -10,17 +10,17 @@ const imageFields = [
     {
         key: "hero_background_image",
         title: "Header Utama",
-        description: "kesan pertama saat pelanggan membuka website.",
-    },
-    {
-        key: "schedule_background_image",
-        title: "Gambar Background Banner Menu Classes",
-        description: "Digunakan pada section Classes di halaman landing page.",
+        description: "Kelola gambar background section Pilates Studio Premium pada halaman landing page (welcome).",
     },
     {
         key: "classes_background_image",
+        title: "Gambar Background Banner Menu Classes",
+        description: "Kelola gambar background pada halaman landing page SectionTitle Classes.",
+    },
+    {
+        key: "schedule_background_image",
         title: "Gambar Background Banner Menu Schedule",
-        description: "Digunakan pada section Schedule di halaman landing page.",
+        description: "Kelola gambar background pada halaman landing page SectionTitle Schedule.",
     },
 ];
 

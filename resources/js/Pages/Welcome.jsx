@@ -182,7 +182,7 @@ export default function Welcome({ currentKey = "home" }) {
 
                         <div className="overflow-hidden p-0">
                             <img
-                                src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1200&q=80"
+                                src={heroBackgroundImage}
                                 alt="Pilates class"
                                 className="h-full min-h-[420px] w-full object-cover"
                             />
@@ -224,7 +224,7 @@ export default function Welcome({ currentKey = "home" }) {
                         <div className="relative h-[100vh] w-full">
                             {/* Gambar Background */}
                             <img 
-                                src="https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=500&q=80" 
+                                src={classesBackgroundImage}
                                 alt="Pilates class" 
                                 className="absolute inset-0 h-full w-full object-cover" 
                             />
@@ -269,7 +269,7 @@ export default function Welcome({ currentKey = "home" }) {
                             <div className="relative h-[100vh] w-full">
                                 {/* Gambar Background */}
                                 <img 
-                                src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1200&q=80"
+                                src={scheduleBackgroundImage}
                                 alt="Pilates class" 
                                 className="absolute inset-0 h-full w-full object-cover" 
                                 />
