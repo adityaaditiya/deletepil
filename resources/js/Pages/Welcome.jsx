@@ -113,18 +113,21 @@ export default function Welcome({ currentKey = "home" }) {
     ];
 
 
+        // Ganti bagian ini di Welcome.jsx
     const heroBackgroundImage = getImageUrl(
         landingPageSetting?.hero_background_image,
-        "landing-page",
-    );
-    const scheduleBackgroundImage = getImageUrl(
-        landingPageSetting?.schedule_background_image,
-        "landing-page",
-    );
+        "landing-page"
+    ) || "https://images.unsplash.com/photo-1595079835353-fb3cf0f83f20?auto=format&fit=crop&w=1200&q=80";
+
     const classesBackgroundImage = getImageUrl(
         landingPageSetting?.classes_background_image,
-        "landing-page",
-    );
+        "landing-page"
+    ) || "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1200&q=80";
+
+    const scheduleBackgroundImage = getImageUrl(
+        landingPageSetting?.schedule_background_image,
+        "landing-page"
+) || "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1200&q=80";
 
     const faqs = [
         {
