@@ -28,12 +28,14 @@ class LandingPageSettingController extends Controller
             'hero_background_image' => ['nullable', 'image', 'max:4096'],
             'schedule_background_image' => ['nullable', 'image', 'max:4096'],
             'classes_background_image' => ['nullable', 'image', 'max:4096'],
+            'studio_logo_image' => ['nullable', 'image', 'max:4096'],
         ]);
 
         $paths = [
             'hero_background_image' => $setting->hero_background_image,
             'schedule_background_image' => $setting->schedule_background_image,
             'classes_background_image' => $setting->classes_background_image,
+            'studio_logo_image' => $setting->studio_logo_image,
         ];
 
         foreach (array_keys($paths) as $field) {
