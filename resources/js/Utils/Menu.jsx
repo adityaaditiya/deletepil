@@ -1,5 +1,5 @@
 import { usePage } from "@inertiajs/react";
-import { IconHome2, IconUsers, IconPhoto } from "@tabler/icons-react";
+import { IconHome2, IconUsers, IconPhoto, IconUserStar } from "@tabler/icons-react";
 import hasAnyPermission from "./Permission";
 
 function Menu() {
@@ -27,6 +27,13 @@ function Menu() {
                     active: url.startsWith("/dashboard/users"),
                     icon: <IconUsers size={20} strokeWidth={1.5} />,
                     permissions: hasAnyPermission(["users-access"]),
+                },
+                {
+                    title: "Trainer",
+                    href: route("trainers.index"),
+                    active: url.startsWith("/dashboard/trainers"),
+                    icon: <IconUserStar size={20} strokeWidth={1.5} />,
+                    permissions: hasAnyPermission(["trainers-access"]),
                 },
             ],
         },

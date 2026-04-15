@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudioPageController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\TrainerController;
 use App\Models\LandingPageSetting;
 use App\Models\Trainer;
 use Illuminate\Foundation\Application;
@@ -21,7 +22,7 @@ Route::get('/', function () {
         // Mengirimkan data setting landing page dari database
         'landingPageSetting' => LandingPageSetting::first(),
         // Mengirimkan data trainer dari database
-        
+        'trainers' => Trainer::query()->select('id', 'name', 'photo', 'expertise')->latest()->get(),
     ]);
 })->name('welcome');
 
@@ -33,7 +34,7 @@ Route::get('/contact', function () {
         'currentKey' => 'contact',
         // Tetap kirimkan data agar gambar background tidak hilang saat pindah menu
         'landingPageSetting' => LandingPageSetting::first(),
-        
+        'trainers' => Trainer::query()->select('id', 'name', 'photo', 'expertise')->latest()->get(),
     ]);
 })->name('contact');
 
@@ -52,6 +53,13 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
         ->middlewareFor(['create', 'store'], 'permission:users-create')
         ->middlewareFor(['edit', 'update'], 'permission:users-update')
         ->middlewareFor('destroy', 'permission:users-delete');
+
+    Route::resource('trainers', TrainerController::class)
+        ->except('show')
+        ->middlewareFor('index', 'permission:trainers-access')
+        ->middlewareFor(['create', 'store'], 'permission:trainers-create')
+        ->middlewareFor(['edit', 'update'], 'permission:trainers-update')
+        ->middlewareFor('destroy', 'permission:trainers-delete');
 
     // Pengaturan Landing Page (Update Gambar & Teks)
     Route::get('/settings/landing-page', [LandingPageSettingController::class, 'edit'])

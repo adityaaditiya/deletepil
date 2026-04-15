@@ -15,6 +15,10 @@ class PermissionSeeder extends Seeder
             'users-create',
             'users-update',
             'users-delete',
+            'trainers-access',
+            'trainers-create',
+            'trainers-update',
+            'trainers-delete',
             'studio-pages-access',
             'landing-page-settings-access',
         ];
