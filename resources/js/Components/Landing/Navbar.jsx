@@ -19,7 +19,7 @@ export default function Navbar({ navItems = defaultNavItems, currentKey = null }
             <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 md:px-6">
                 <div className="flex items-center gap-3">
                     {studioLogoImage ? (
-                        <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-2xl border border-primary-200 bg-white p-1 shadow-sm">
+                        <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl border border-primary-200 bg-white p-1 shadow-sm">
                             <img src={studioLogoImage} alt="Logo Studio" className="h-full w-full object-contain" />
                         </div>
                     ) : (
