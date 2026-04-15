@@ -24,8 +24,9 @@ export default function Welcome({ currentKey = "home" }) {
 
     const trustBadges = ["Certified Trainers", "Small Group", "Beginner Friendly"];
     const navItems = [
-        { name: "Home", href: route("welcome") },
-        { name: "Contact", href: route("contact") },
+        { name: "Home", href: route("welcome"), key: "home" },
+        { name: "Jadwal Sesi", href: route("jadwal-sesi"), key: "jadwal-sesi" },
+        { name: "Contact", href: route("contact"), key: "contact" },
     ];
 
     // const navItems = [
@@ -129,6 +130,23 @@ export default function Welcome({ currentKey = "home" }) {
         "landing-page"
 ) || "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1200&q=80";
 
+    const sessionDetail = {
+        image: classesBackgroundImage,
+        title: "Morning Reformer Flow",
+        trainer: "Nadia Putri",
+        date: "Sabtu, 20 April 2026",
+        time: "09:00 WIB",
+        duration: "60 menit",
+        capacity: "12 peserta",
+        remaining: "3 peserta",
+        level: "Beginner - Intermediate",
+        equipment: "Reformer machine, mat, hand towel, grip socks",
+        price: "Rp175.000 / sesi",
+        paymentMethod: "Transfer Bank, QRIS, E-Wallet",
+        about: "Sesi reformer berfokus pada penguatan core, alignment postur, dan peningkatan fleksibilitas dengan tempo yang aman untuk pemula.",
+        formLink: "https://forms.gle/",
+    };
+
     const faqs = [
         {
             q: "Apakah cocok untuk pemula?",
@@ -148,6 +166,74 @@ export default function Welcome({ currentKey = "home" }) {
         },
     ];
 
+    if (currentKey === "jadwal-sesi") {
+        return (
+            <>
+                <Head title="Jadwal Sesi | ORO Pilates Studio" />
+                <div className="min-h-screen bg-wellness-beige text-wellness-text">
+                    <Navbar navItems={navItems} currentKey={currentKey} />
+                    <section className="px-4 py-14 md:px-6">
+                        <div className="mx-auto max-w-5xl">
+                            <SectionTitle
+                                eyebrow="Jadwal Sesi"
+                                title="Detail sesi pilates"
+                                description="Lihat informasi lengkap sebelum bergabung ke sesi."
+                            />
+                            <Card className="mt-10 overflow-hidden">
+                                <img src={sessionDetail.image} alt={sessionDetail.title} className="h-72 w-full rounded-2xl object-cover" />
+                                <div className="mt-6 grid gap-4 text-sm text-wellness-muted md:grid-cols-2">
+                                    <p><span className="font-semibold text-wellness-text">Judul Sesi:</span> {sessionDetail.title}</p>
+                                    <p><span className="font-semibold text-wellness-text">Trainer:</span> {sessionDetail.trainer}</p>
+                                    <p><span className="font-semibold text-wellness-text">Tanggal Sesi:</span> {sessionDetail.date}</p>
+                                    <p><span className="font-semibold text-wellness-text">Jam Sesi:</span> {sessionDetail.time}</p>
+                                    <p><span className="font-semibold text-wellness-text">Durasi:</span> {sessionDetail.duration}</p>
+                                    <p><span className="font-semibold text-wellness-text">Kapasitas Peserta:</span> {sessionDetail.capacity}</p>
+                                    <p><span className="font-semibold text-wellness-text">Sisa Peserta:</span> {sessionDetail.remaining}</p>
+                                    <p><span className="font-semibold text-wellness-text">Level Sesi:</span> {sessionDetail.level}</p>
+                                    <p><span className="font-semibold text-wellness-text">Perlengkapan:</span> {sessionDetail.equipment}</p>
+                                    <p><span className="font-semibold text-wellness-text">Harga per Sesi:</span> {sessionDetail.price}</p>
+                                    <p><span className="font-semibold text-wellness-text">Metode Pembayaran:</span> {sessionDetail.paymentMethod}</p>
+                                </div>
+                                <div className="mt-6 rounded-2xl bg-wellness-soft p-4">
+                                    <p className="text-sm font-semibold text-wellness-text">Tentang Sesi</p>
+                                    <p className="mt-2 text-sm leading-relaxed text-wellness-muted">{sessionDetail.about}</p>
+                                </div>
+                                <a
+                                    href={sessionDetail.formLink}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="mt-6 inline-flex rounded-full bg-primary-600 px-6 py-3 text-sm font-medium text-white hover:bg-primary-700"
+                                >
+                                    Gabung Sesi
+                                </a>
+                            </Card>
+                        </div>
+                    </section>
+                </div>
+            </>
+        );
+    }
+
+    if (currentKey === "contact") {
+        return (
+            <>
+                <Head title="Contact | ORO Pilates Studio" />
+                <div className="min-h-screen bg-wellness-beige text-wellness-text">
+                    <Navbar navItems={navItems} currentKey={currentKey} />
+                    <section className="px-4 py-20 md:px-6">
+                        <div className="mx-auto max-w-3xl text-center">
+                            <SectionTitle
+                                eyebrow="Contact"
+                                title="Hubungi kami"
+                                description="Untuk informasi kelas dan reservasi, silakan hubungi kami melalui WhatsApp: 0823-2692-3196."
+                            />
+                        </div>
+                    </section>
+                </div>
+            </>
+        );
+    }
+
     return (
         <>
             <Head title="Pilates Studio | Move Better. Feel Stronger." />
@@ -157,7 +243,7 @@ export default function Welcome({ currentKey = "home" }) {
                     30% Off Class this week — Slot terbatas, reservasi sekarang.
                 </div>
 
-                <Navbar navItems={navItems} currentKey="home" />
+                <Navbar navItems={navItems} currentKey={currentKey} />
 
                 <section className="bg-gradient-to-br from-wellness-beige via-wellness-soft to-wellness-greige px-4 pb-20 pt-16 md:px-6 md:pt-20">
                     <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-2">

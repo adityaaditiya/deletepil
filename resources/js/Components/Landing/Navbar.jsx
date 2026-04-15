@@ -6,6 +6,7 @@ import { getImageUrl } from "@/Utils/imageUrl";
 
 const defaultNavItems = [
     { name: "Home", href: route("welcome") },
+    { name: "Jadwal Sesi", href: route("jadwal-sesi") },
     { name: "Contact", href: route("contact") },
 ];
 
@@ -38,7 +39,7 @@ export default function Navbar({ navItems = defaultNavItems, currentKey = null }
                         <Link
                             key={item.name}
                             href={item.href}
-                            className={item.name.toLowerCase() === currentKey ? "text-sm font-medium text-primary-600" : "text-sm text-wellness-muted transition hover:text-primary-600"}
+                            className={item.key === currentKey ? "text-sm font-medium text-primary-600" : "text-sm text-wellness-muted transition hover:text-primary-600"}
                         >
                             {item.name}
                         </Link>
