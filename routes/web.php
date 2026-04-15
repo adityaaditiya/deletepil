@@ -26,6 +26,18 @@ Route::get('/', function () {
     ]);
 })->name('welcome');
 
+
+// Route Halaman Jadwal Sesi
+Route::get('/jadwal-sesi', function () {
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+        'currentKey' => 'jadwal-sesi',
+        'landingPageSetting' => LandingPageSetting::first(),
+        'trainers' => Trainer::query()->select('id', 'name', 'photo', 'expertise')->latest()->get(),
+    ]);
+})->name('jadwal-sesi');
+
 // Route Halaman Contact (Menggunakan komponen Welcome dengan state berbeda)
 Route::get('/contact', function () {
     return Inertia::render('Welcome', [
