@@ -1,0 +1,371 @@
+<?php
+namespace App\Http\Controllers\Apps;
+
+use App\Http\Controllers\Controller;
+use App\Models\Customer;
+use App\Models\Transaction;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Inertia\Inertia;
+use Spatie\Permission\Models\Role;
+
+class CustomerController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        //get customers
+        $customers = Customer::when(request()->search, function ($customers) {
+            $search = request()->search;
+
+            $customers = $customers->where(function ($query) use ($search) {
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('no_telp', 'like', '%' . $search . '%')
+                    ->orWhere('address', 'like', '%' . $search . '%')
+                    ->orWhereHas('user', function ($userQuery) use ($search) {
+                        $userQuery->where('email', 'like', '%' . $search . '%');
+                    });
+            });
+        })->with('user:id,email')->latest()->paginate(5);
+
+        //return inertia
+        return Inertia::render('Dashboard/Customers/Index', [
+            'customers' => $customers,
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        return Inertia::render('Dashboard/Customers/Create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        /**
+         * validate
+         */
+        $request->validate([
+            'name'    => 'required',
+            'no_telp' => 'required|unique:customers',
+            'address' => 'required',
+            'gender' => 'required|in:Laki-laki,Perempuan',
+            'date_of_birth' => 'required|date|before:today',
+            'photo' => 'nullable|image|max:2048',
+            'credit'  => 'required|numeric|min:0',
+            'email'   => 'required|email|unique:users,email',
+            'password'=> 'required|string|min:8|confirmed',
+        ]);
+
+        DB::transaction(function () use ($request) {
+            $user = User::create([
+                'name'     => $request->name,
+                'email'    => $request->email,
+                'password' => $request->password,
+            ]);
+
+            if (Role::where('name', 'customer')->exists()) {
+                $user->assignRole('customer');
+            } else {
+                $user->givePermissionTo('my-transactions-access');
+            }
+
+            $photoPath = null;
+
+            if ($request->file('photo')) {
+                $photo = $request->file('photo');
+                $photo->storeAs('public/customers', $photo->hashName());
+                $photoPath = $photo->hashName();
+            }
+
+            Customer::create([
+                'user_id'  => $user->id,
+                'name'     => $request->name,
+                'no_telp'  => $request->no_telp,
+                'address'  => $request->address,
+                'gender' => $request->gender,
+                'date_of_birth' => $request->date_of_birth,
+                'photo' => $photoPath,
+                'credit'   => $request->credit,
+            ]);
+        });
+
+        //redirect
+        return to_route('customers.index');
+    }
+
+    /**
+     * Store a newly created customer via AJAX (returns JSON, no redirect)
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function storeAjax(Request $request)
+    {
+        $validated = $request->validate([
+            'name'    => 'required|string|max:255',
+            'no_telp' => 'required|string|unique:customers,no_telp',
+            'address' => 'required|string',
+            'gender' => 'required|in:Laki-laki,Perempuan',
+            'date_of_birth' => 'required|date|before:today',
+            'photo' => 'nullable|image|max:2048',
+            'credit'  => 'required|numeric|min:0',
+            'email'   => 'required|email|unique:users,email',
+            'password'=> 'required|string|min:8|confirmed',
+        ]);
+
+        try {
+            $customer = DB::transaction(function () use ($validated, $request) {
+                $user = User::create([
+                    'name'     => $validated['name'],
+                    'email'    => $validated['email'],
+                    'password' => $validated['password'],
+                ]);
+
+                if (Role::where('name', 'customer')->exists()) {
+                    $user->assignRole('customer');
+                } else {
+                    $user->givePermissionTo('my-transactions-access');
+                }
+
+                $photoPath = null;
+
+                if ($request->file('photo')) {
+                    $photo = $request->file('photo');
+                    $photo->storeAs('public/customers', $photo->hashName());
+                    $photoPath = $photo->hashName();
+                }
+
+                return Customer::create([
+                    'user_id'  => $user->id,
+                    'name'     => $validated['name'],
+                    'no_telp'  => $validated['no_telp'],
+                    'address'  => $validated['address'],
+                    'gender' => $validated['gender'],
+                    'date_of_birth' => $validated['date_of_birth'],
+                    'photo' => $photoPath,
+                    'credit'   => $validated['credit'],
+                ]);
+            });
+
+            return response()->json([
+                'success'  => true,
+                'message'  => 'Pelanggan berhasil ditambahkan',
+                'customer' => [
+                    'id'      => $customer->id,
+                    'name'    => $customer->name,
+                    'email'   => $customer->user?->email,
+                    'phone'   => $customer->no_telp,
+                    'address' => $customer->address,
+                    'gender' => $customer->gender,
+                    'date_of_birth' => optional($customer->date_of_birth)->format('Y-m-d'),
+                    'photo' => $customer->photo,
+                    'credit'  => $customer->credit,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menambahkan pelanggan',
+                'errors'  => [],
+            ], 500);
+        }
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Customer $customer)
+    {
+        $customer->load('user:id,email');
+
+        return Inertia::render('Dashboard/Customers/Edit', [
+            'customer' => $customer,
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, Customer $customer)
+    {
+        /**
+         * validate
+         */
+        $request->validate([
+            'name'    => 'required',
+            'no_telp' => 'required|unique:customers,no_telp,' . $customer->id,
+            'address' => 'required',
+            'gender' => 'required|in:Laki-laki,Perempuan',
+            'date_of_birth' => 'required|date|before:today',
+            'photo' => 'nullable|image|max:2048',
+            'credit'  => 'required|numeric|min:0',
+            'email'   => 'required|email|unique:users,email,' . $customer->user_id,
+            'password'=> 'nullable|string|min:8|confirmed',
+        ]);
+
+        DB::transaction(function () use ($request, $customer) {
+            $user = $customer->user;
+
+            if (! $user) {
+                $user = User::create([
+                    'name'     => $request->name,
+                    'email'    => $request->email,
+                    'password' => $request->filled('password') ? $request->password : Str::random(16),
+                ]);
+                if (Role::where('name', 'customer')->exists()) {
+                    $user->assignRole('customer');
+                } else {
+                    $user->givePermissionTo('my-transactions-access');
+                }
+            } else {
+                $user->name  = $request->name;
+                $user->email = $request->email;
+
+                if ($request->filled('password')) {
+                    $user->password = Hash::make($request->password);
+                }
+
+                $user->save();
+            }
+
+            $photoPath = $customer->photo;
+
+            if ($request->file('photo')) {
+                if ($photoPath) {
+                    Storage::disk('local')->delete('public/customers/' . basename($photoPath));
+                }
+
+                $photo = $request->file('photo');
+                $photo->storeAs('public/customers', $photo->hashName());
+                $photoPath = $photo->hashName();
+            }
+
+            $customer->update([
+                'user_id'  => $user->id,
+                'name'     => $request->name,
+                'no_telp'  => $request->no_telp,
+                'address'  => $request->address,
+                'gender' => $request->gender,
+                'date_of_birth' => $request->date_of_birth,
+                'photo' => $photoPath,
+                'credit'   => $request->credit,
+            ]);
+        });
+
+        //redirect
+        return to_route('customers.index');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //find customer by ID
+        $customer = Customer::with('user')->findOrFail($id);
+
+        if ($customer->photo) {
+            Storage::disk('local')->delete('public/customers/' . basename($customer->photo));
+        }
+
+        //delete customer
+        $customer->delete();
+
+        if ($customer->user) {
+            $customer->user->delete();
+        }
+
+        //redirect
+        return back();
+    }
+
+    /**
+     * Get customer purchase history
+     *
+     * @param  Customer $customer
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getHistory(Customer $customer)
+    {
+        // Get transaction statistics
+        $stats = Transaction::notCanceled()
+            ->where('customer_id', $customer->id)
+            ->selectRaw('
+                COUNT(*) as total_transactions,
+                SUM(grand_total) as total_spent,
+                MAX(created_at) as last_visit
+            ')
+            ->first();
+
+        // Get recent transactions (last 5)
+        $recentTransactions = Transaction::notCanceled()
+            ->where('customer_id', $customer->id)
+            ->select('id', 'invoice', 'grand_total', 'payment_method', 'created_at')
+            ->orderByDesc('created_at')
+            ->limit(5)
+            ->get()
+            ->map(fn($t) => [
+                'id'             => $t->id,
+                'invoice'        => $t->invoice,
+                'total'          => $t->grand_total,
+                'payment_method' => $t->payment_method,
+                'date'           => \Carbon\Carbon::parse($t->created_at)->format('d M Y H:i'),
+            ]);
+
+        // Get frequently purchased products
+        $frequentProducts = Transaction::notCanceled()
+            ->where('customer_id', $customer->id)
+            ->join('transaction_details', 'transactions.id', '=', 'transaction_details.transaction_id')
+            ->join('products', 'transaction_details.product_id', '=', 'products.id')
+            ->selectRaw('products.id, products.title, SUM(transaction_details.qty) as total_qty')
+            ->groupBy('products.id', 'products.title')
+            ->orderByDesc('total_qty')
+            ->limit(3)
+            ->get();
+
+        return response()->json([
+            'success'             => true,
+            'customer'            => [
+                'id'    => $customer->id,
+                'name'  => $customer->name,
+                'phone' => $customer->no_telp,
+            ],
+            'stats'               => [
+                'total_transactions' => (int) ($stats->total_transactions ?? 0),
+                'total_spent'        => (int) ($stats->total_spent ?? 0),
+                'last_visit'         => $stats->last_visit ? \Carbon\Carbon::parse($stats->last_visit)->format('d M Y') : null,
+            ],
+            'recent_transactions' => $recentTransactions,
+            'frequent_products'   => $frequentProducts,
+        ]);
+    }
+}

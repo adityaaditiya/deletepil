@@ -1,0 +1,99 @@
+<?php
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use App\Models\Customer;
+use App\Models\User;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rules;
+use Inertia\Inertia;
+use Inertia\Response;
+use Spatie\Permission\Models\Role;
+
+class RegisteredUserController extends Controller
+{
+    /**
+     * Display the registration view.
+     */
+    public function create(Request $request): Response
+    {
+        return Inertia::render('Auth/Register', [
+            'redirect' => $request->query('redirect'),
+        ]);
+    }
+
+    /**
+     * Handle an incoming registration request.
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        $redirect = trim((string) $request->input('redirect', ''));
+        $sanitizedAddress = preg_replace('/[<>;]/', '', (string) $request->input('address', ''));
+        $request->merge([
+            'address' => trim((string) $sanitizedAddress),
+        ]);
+
+        $request->validate([
+            'name'     => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
+            'email'    => 'required|string|lowercase|email|max:255|unique:' . User::class,
+            'no_telp'  => 'required|regex:/^[0-9]+$/|digits_between:7,15|unique:customers,no_telp',
+            'address'  => 'required|string|min:10|max:1000',
+            'gender' => 'required|in:Laki-laki,Perempuan',
+            'date_of_birth' => 'required|date|before:today',
+            'photo' => 'nullable|image|max:2048',
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        $user = DB::transaction(function () use ($request) {
+            $user = User::create([
+                'name'     => $request->name,
+                'email'    => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+
+            $photoPath = null;
+
+            if ($request->file('photo')) {
+                $photo = $request->file('photo');
+                $photo->storeAs('public/customers', $photo->hashName());
+                $photoPath = $photo->hashName();
+            }
+
+            Customer::create([
+                'user_id'  => $user->id,
+                'name'     => $request->name,
+                'no_telp'  => $request->no_telp,
+                'address'  => $request->address,
+                'gender' => $request->gender,
+                'date_of_birth' => $request->date_of_birth,
+                'photo' => $photoPath,
+            ]);
+
+            // Assign default role for self-registration users
+            if (Role::where('name', 'customer')->exists()) {
+                $user->assignRole('customer');
+            } else {
+                $user->givePermissionTo('my-transactions-access');
+            }
+
+            return $user;
+        });
+
+        event(new Registered($user));
+
+        Auth::login($user);
+
+        if ($redirect !== '' && str_starts_with($redirect, '/')) {
+            return redirect()->to($redirect);
+        }
+
+        return redirect(route('welcome', absolute: false));
+    }
+}
