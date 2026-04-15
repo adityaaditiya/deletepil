@@ -40,16 +40,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        if ($request->user()->hasRole('customer')) {
-            return redirect()->intended(route('welcome', absolute: false));
-        }
-
         if ($request->user()->can('dashboard-access')) {
             return redirect()->intended(route('dashboard', absolute: false));
-        }
-
-        if ($request->user()->can('my-transactions-access')) {
-            return redirect()->intended(route('transactions.my', absolute: false));
         }
 
         return redirect()->intended(route('welcome', absolute: false));
