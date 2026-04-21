@@ -30,6 +30,7 @@ export default function Welcome({ currentKey = "home" }) {
     const navItems = [
         { name: "Home", href: route("welcome"), key: "home" },
         { name: "Jadwal Sesi", href: route("jadwal-sesi"), key: "jadwal-sesi" },
+        { name: "Trainer", href: route("trainer"), key: "trainer" },
         { name: "Contact", href: route("contact"), key: "contact" },
     ];
 

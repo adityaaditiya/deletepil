@@ -7,6 +7,7 @@ import { getImageUrl } from "@/Utils/imageUrl";
 const defaultNavItems = [
     { name: "Home", href: route("welcome") },
     { name: "Jadwal Sesi", href: route("jadwal-sesi") },
+    { name: "Trainer", href: route("trainer") },
     { name: "Contact", href: route("contact") },
 ];
 
@@ -34,12 +35,16 @@ export default function Navbar({ navItems = defaultNavItems, currentKey = null }
                     </div>
                 </div>
 
-                <div className="hidden items-center gap-7 lg:flex">
+                <div className="hidden items-center gap-10 lg:flex">
                     {navItems.map((item) => (
                         <Link
                             key={item.name}
                             href={item.href}
-                            className={item.key === currentKey ? "text-sm font-medium text-primary-600" : "text-sm text-wellness-muted transition hover:text-primary-600"}
+                            className={`text-base transition ${
+                                item.key === currentKey 
+                                    ? "font-bold text-primary-600" 
+                                    : "text-wellness-muted hover:text-primary-600"
+                            }`}
                         >
                             {item.name}
                         </Link>

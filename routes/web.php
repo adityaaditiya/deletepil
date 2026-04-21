@@ -42,6 +42,19 @@ Route::get('/jadwal-sesi', function () {
     ]);
 })->name('jadwal-sesi');
 
+// Route Halaman Trainer (Menggunakan komponen Welcome dengan state berbeda)
+Route::get('/trainer', function () {
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+        'currentKey' => 'trainer',
+        // Tetap kirimkan data agar gambar background tidak hilang saat pindah menu
+        'landingPageSetting' => LandingPageSetting::first(),
+        'trainers' => Trainer::query()->select('id', 'name', 'photo', 'expertise')->latest()->get(),
+        'studioSessions' => StudioSession::query()->latest()->get(),
+    ]);
+})->name('trainer');
+
 // Route Halaman Contact (Menggunakan komponen Welcome dengan state berbeda)
 Route::get('/contact', function () {
     return Inertia::render('Welcome', [
