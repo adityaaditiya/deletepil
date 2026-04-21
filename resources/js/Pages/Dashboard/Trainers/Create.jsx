@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { Head, Link, useForm } from "@inertiajs/react";
 import DashboardLayout from "@/Layouts/DashboardLayout";
 import Input from "@/Components/Dashboard/Input";
+import Textarea from "@/Components/Dashboard/TextArea";
 import { IconArrowLeft, IconDeviceFloppy, IconUserStar } from "@tabler/icons-react";
 import toast from "react-hot-toast";
 
@@ -9,6 +10,7 @@ export default function Create() {
     const { data, setData, post, errors, processing } = useForm({
         name: "",
         expertise: "",
+        biodata: "",
         photo: null,
     });
 
@@ -58,6 +60,16 @@ export default function Create() {
                             value={data.expertise}
                             onChange={(e) => setData("expertise", e.target.value)}
                             errors={errors.expertise}
+                        />
+                    </div>
+                    <div className="mt-4">
+                        <Textarea
+                            label="Profile Biodata Trainer"
+                            placeholder="Masukkan biodata singkat trainer"
+                            value={data.biodata}
+                            onChange={(e) => setData("biodata", e.target.value)}
+                            errors={errors.biodata}
+                            rows={4}
                         />
                     </div>
 
