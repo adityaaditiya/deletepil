@@ -24,7 +24,7 @@ Route::get('/', function () {
         // Mengirimkan data setting landing page dari database
         'landingPageSetting' => LandingPageSetting::first(),
         // Mengirimkan data trainer dari database
-        'trainers' => Trainer::query()->select('id', 'name', 'photo', 'expertise', 'biodata')->latest()->get(),
+        'trainers' => Trainer::query()->select('id', 'name', 'photo', 'expertise')->latest()->get(),
         'studioSessions' => StudioSession::query()->latest()->get(),
     ]);
 })->name('welcome');
@@ -37,7 +37,7 @@ Route::get('/jadwal-sesi', function () {
         'canRegister' => Route::has('register'),
         'currentKey' => 'jadwal-sesi',
         'landingPageSetting' => LandingPageSetting::first(),
-        'trainers' => Trainer::query()->select('id', 'name', 'photo', 'expertise', 'biodata')->latest()->get(),
+        'trainers' => Trainer::query()->select('id', 'name', 'photo', 'expertise')->latest()->get(),
         'studioSessions' => StudioSession::query()->latest()->get(),
     ]);
 })->name('jadwal-sesi');
@@ -50,7 +50,7 @@ Route::get('/trainer', function () {
         'currentKey' => 'trainer',
         // Tetap kirimkan data agar gambar background tidak hilang saat pindah menu
         'landingPageSetting' => LandingPageSetting::first(),
-        'trainers' => Trainer::query()->select('id', 'name', 'photo', 'expertise', 'biodata')->latest()->get(),
+        'trainers' => Trainer::query()->select('id', 'name', 'photo', 'expertise')->latest()->get(),
         'studioSessions' => StudioSession::query()->latest()->get(),
     ]);
 })->name('trainer');
@@ -63,7 +63,7 @@ Route::get('/contact', function () {
         'currentKey' => 'contact',
         // Tetap kirimkan data agar gambar background tidak hilang saat pindah menu
         'landingPageSetting' => LandingPageSetting::first(),
-        'trainers' => Trainer::query()->select('id', 'name', 'photo', 'expertise', 'biodata')->latest()->get(),
+        'trainers' => Trainer::query()->select('id', 'name', 'photo', 'expertise')->latest()->get(),
         'studioSessions' => StudioSession::query()->latest()->get(),
     ]);
 })->name('contact');
@@ -111,10 +111,6 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
     Route::put('/studio-sessions/{studioSession}', [StudioSessionController::class, 'update'])
         ->middleware('permission:studio-pages-access')
         ->name('studio-sessions.update');
-
-    Route::delete('/studio-sessions/{studioSession}', [StudioSessionController::class, 'destroy'])
-        ->middleware('permission:studio-pages-access')
-        ->name('studio-sessions.destroy');
 
     // Profile Akun
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

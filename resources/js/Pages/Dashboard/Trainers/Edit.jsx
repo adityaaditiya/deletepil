@@ -2,7 +2,6 @@ import React, { useMemo } from "react";
 import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import DashboardLayout from "@/Layouts/DashboardLayout";
 import Input from "@/Components/Dashboard/Input";
-import Textarea from "@/Components/Dashboard/TextArea";
 import { getImageUrl } from "@/Utils/imageUrl";
 import { IconArrowLeft, IconDeviceFloppy, IconUserStar } from "@tabler/icons-react";
 import toast from "react-hot-toast";
@@ -13,7 +12,6 @@ export default function Edit() {
     const { data, setData, post, errors, processing } = useForm({
         name: trainer.name || "",
         expertise: trainer.expertise || "",
-        biodata: trainer.biodata || "",
         photo: null,
         _method: "PUT",
     });
@@ -62,15 +60,6 @@ export default function Edit() {
                             value={data.expertise}
                             onChange={(e) => setData("expertise", e.target.value)}
                             errors={errors.expertise}
-                        />
-                    </div>
-                    <div className="mt-4">
-                        <Textarea
-                            label="Profile Biodata Trainer"
-                            value={data.biodata}
-                            onChange={(e) => setData("biodata", e.target.value)}
-                            errors={errors.biodata}
-                            rows={4}
                         />
                     </div>
 

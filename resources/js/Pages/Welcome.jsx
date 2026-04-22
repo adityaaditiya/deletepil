@@ -491,7 +491,6 @@ export default function Welcome({ currentKey = "home" }) {
                                         />
                                         <h3 className="mt-5 text-xl font-semibold">{trainer.name}</h3>
                                         <p className="mt-2 text-sm text-wellness-muted">{trainer.expertise || "Trainer Pilates"}</p>
-                                        <p className="mt-2 text-sm text-wellness-muted">{trainer.biodata || "Biodata trainer belum diisi."}</p>
                                     </Card>
                                 ))
                             ) : (
