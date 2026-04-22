@@ -21,7 +21,7 @@ class TrainerController extends Controller
                         ->orWhere('expertise', 'like', "%{$search}%");
                 })
             )
-            ->select('id', 'name', 'photo', 'expertise', 'biodata')
+            ->select('id', 'name', 'photo', 'expertise')
             ->latest()
             ->paginate(9)
             ->withQueryString();
@@ -41,7 +41,6 @@ class TrainerController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'expertise' => ['required', 'string', 'max:255'],
-            'biodata' => ['nullable', 'string'],
             'photo' => ['nullable', 'image', 'max:4096'],
         ]);
 
@@ -67,7 +66,6 @@ class TrainerController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'expertise' => ['required', 'string', 'max:255'],
-            'biodata' => ['nullable', 'string'],
             'photo' => ['nullable', 'image', 'max:4096'],
         ]);
 

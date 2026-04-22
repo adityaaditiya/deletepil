@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from "react";
-import { Head, router, useForm, usePage } from "@inertiajs/react";
+import { Head, useForm, usePage } from "@inertiajs/react";
 import DashboardLayout from "@/Layouts/DashboardLayout";
 import Input from "@/Components/Dashboard/Input";
 import Textarea from "@/Components/Dashboard/TextArea";
-import { IconCalendarEvent, IconDeviceFloppy, IconEdit, IconTrash } from "@tabler/icons-react";
+import { IconCalendarEvent, IconDeviceFloppy, IconEdit } from "@tabler/icons-react";
 import { getImageUrl } from "@/Utils/imageUrl";
 import toast from "react-hot-toast";
 
@@ -125,20 +125,6 @@ export default function Index() {
         });
     };
 
-    const onDelete = (session) => {
-        if (!window.confirm(`Hapus jadwal sesi "${session.title}"?`)) return;
-
-        router.delete(route("studio-sessions.destroy", session.id), {
-            onSuccess: () => {
-                toast.success("Jadwal sesi berhasil dihapus");
-                if (editingSession?.id === session.id) {
-                    setEditingSession(null);
-                }
-            },
-            onError: () => toast.error("Gagal menghapus jadwal sesi"),
-        });
-    };
-
     return (
         <>
             <Head title="Kelola Jadwal Sesi" />
@@ -191,20 +177,12 @@ export default function Index() {
                         />
                         <h3 className="mt-3 text-lg font-semibold text-slate-900 dark:text-slate-100">{session.title}</h3>
                         <p className="text-sm text-slate-500 dark:text-slate-400">{session.date} • {session.time}</p>
-                        <div className="mt-3 flex gap-2">
-                            <button
-                                onClick={() => startEdit(session)}
-                                className="inline-flex items-center gap-2 rounded-xl bg-warning-500 px-4 py-2 text-sm font-medium text-white hover:bg-warning-600"
-                            >
-                                <IconEdit size={16} /> Edit
-                            </button>
-                            <button
-                                onClick={() => onDelete(session)}
-                                className="inline-flex items-center gap-2 rounded-xl bg-danger-500 px-4 py-2 text-sm font-medium text-white hover:bg-danger-600"
-                            >
-                                <IconTrash size={16} /> Hapus
-                            </button>
-                        </div>
+                        <button
+                            onClick={() => startEdit(session)}
+                            className="mt-3 inline-flex items-center gap-2 rounded-xl bg-warning-500 px-4 py-2 text-sm font-medium text-white hover:bg-warning-600"
+                        >
+                            <IconEdit size={16} /> Edit
+                        </button>
                     </div>
                 ))}
             </div>
