@@ -50,6 +50,17 @@ class StudioSessionController extends Controller
         return to_route('studio-sessions.index');
     }
 
+     public function destroy(StudioSession $studioSession): RedirectResponse
+    {
+        if (filled($studioSession->image) && ! str_starts_with($studioSession->image, 'http://') && ! str_starts_with($studioSession->image, 'https://')) {
+            Storage::disk('local')->delete('public/sessions/' . basename($studioSession->image));
+        }
+
+        $studioSession->delete();
+
+        return to_route('studio-sessions.index');
+    }
+
     private function validateData(Request $request): array
     {
         return $request->validate([

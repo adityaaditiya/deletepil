@@ -37,10 +37,15 @@ Route::get('/jadwal-sesi', function () {
         'canRegister' => Route::has('register'),
         'currentKey' => 'jadwal-sesi',
         'landingPageSetting' => LandingPageSetting::first(),
-        'trainers' => Trainer::query()->select('id', 'name', 'photo', 'expertise')->latest()->get(),
+        'trainers' => Trainer::query()->select('id', 'name', 'photo', 'expertise', 'biodata')->latest()->get(),
         'studioSessions' => StudioSession::query()->latest()->get(),
     ]);
 })->name('jadwal-sesi');
+
+Route::delete('/studio-sessions/{studioSession}', [StudioSessionController::class, 'destroy'])
+        ->middleware('permission:studio-pages-access')
+        ->name('studio-sessions.destroy');
+
 
 // Route Halaman Trainer (Menggunakan komponen Welcome dengan state berbeda)
 Route::get('/trainer', function () {
@@ -50,7 +55,7 @@ Route::get('/trainer', function () {
         'currentKey' => 'trainer',
         // Tetap kirimkan data agar gambar background tidak hilang saat pindah menu
         'landingPageSetting' => LandingPageSetting::first(),
-        'trainers' => Trainer::query()->select('id', 'name', 'photo', 'expertise')->latest()->get(),
+        'trainers' => Trainer::query()->select('id', 'name', 'photo', 'expertise', 'biodata')->latest()->get(),
         'studioSessions' => StudioSession::query()->latest()->get(),
     ]);
 })->name('trainer');
@@ -63,7 +68,7 @@ Route::get('/contact', function () {
         'currentKey' => 'contact',
         // Tetap kirimkan data agar gambar background tidak hilang saat pindah menu
         'landingPageSetting' => LandingPageSetting::first(),
-        'trainers' => Trainer::query()->select('id', 'name', 'photo', 'expertise')->latest()->get(),
+        'trainers' => Trainer::query()->select('id', 'name', 'photo', 'expertise', 'biodata')->latest()->get(),
         'studioSessions' => StudioSession::query()->latest()->get(),
     ]);
 })->name('contact');

@@ -15,6 +15,7 @@ import {
     IconSparkles,
     IconStretching,
     IconYoga,
+    IconUser,
 } from "@tabler/icons-react";
 import Button from "@/Components/Landing/Button";
 import Card from "@/Components/Landing/Card";
@@ -165,31 +166,115 @@ export default function Welcome({ currentKey = "home" }) {
     };
 
     if (currentKey === "jadwal-sesi") {
+    return (
+        <>
+            <Head title="Jadwal Sesi | ORO Pilates Studio" />
+            <div className="min-h-screen bg-wellness-beige text-wellness-text">
+                <Navbar navItems={navItems} currentKey={currentKey} />
+                
+                <main className="px-4 py-12 md:px-6">
+                    <div className="mx-auto max-w-6xl">
+                        <div className="mb-10 text-center md:text-left">
+                            <SectionTitle
+                                title="Detail Sesi Pilates"
+                                description="Temukan jadwal yang sesuai dan bergabunglah dengan sesi kami untuk mencapai kebugaran optimal."
+                            />
+                        </div>
+
+                        {studioSessions.length > 0 ? (
+                            // Ubah menjadi 2 kolom di layar besar agar kartu tidak terlalu memanjang
+                            <div className="grid gap-8 lg:grid-cols-2">
+                                {studioSessions.map((session) => (
+                                    <SessionDetailCard key={session.id} session={session} />
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="mt-10 flex flex-col items-center justify-center rounded-3xl border border-dashed border-gray-300 bg-white/50 py-16 text-center">
+                                <p className="text-lg font-medium text-wellness-muted">Belum ada jadwal sesi yang tersedia saat ini.</p>
+                                <p className="mt-2 text-sm text-gray-400">Silakan cek kembali beberapa saat lagi.</p>
+                            </div>
+                        )}
+                    </div>
+                </main>
+            </div>
+        </>
+    );
+}
+
+    if (currentKey === "trainer") {
         return (
             <>
-                <Head title="Jadwal Sesi | ORO Pilates Studio" />
+                <Head title="Trainers | ORO Pilates Studio" />
                 <div className="min-h-screen bg-wellness-beige text-wellness-text">
                     <Navbar navItems={navItems} currentKey={currentKey} />
-                    <section className="px-4 py-8 md:px-6">
-                        <div className="mx-auto max-w-5xl">
+                    
+                    {/* Bagian Utama: Memisahkan Header dari Grid Card */}
+                    <main className="mx-auto max-w-6xl px-4 pb-16 pt-8">
+                        
+                        {/* Area Judul (Di luar grid agar posisinya terpusat di atas) */}
+                        <div className="mb-12">
                             <SectionTitle
-                                // eyebrow="Jadwal Sesi"
-                                title="Detail Sesi Pilates"
-                                description="Lihat informasi lengkap sebelum bergabung ke sesi."
+                                title="Our Trainers" // Disesuaikan, sebelumnya "Contact Us"
+                                description="Kenali instruktur profesional kami yang siap membantu Anda merasakan manfaat pilates dengan pengalaman terbaik."
                             />
-                            {studioSessions.length > 0 ? (
-                                <div className="mt-10 grid gap-6">
-                                    {studioSessions.map((session) => (
-                                        <SessionDetailCard key={session.id} session={session} />
-                                    ))}
-                                </div>
-                            ) : (
-                                <Card className="mt-10">
-                                    <p className="text-sm text-wellness-muted">Belum ada jadwal sesi yang tersedia saat ini.</p>
-                                </Card>
-                            )}
                         </div>
-                    </section>
+
+                        {/* Area State Kosong */}
+                        {trainers.length === 0 && (
+                            <div className="flex flex-col items-center justify-center py-12 text-center">
+                                <p className="text-lg text-wellness-muted">Belum ada data trainer saat ini.</p>
+                            </div>
+                        )}
+
+                        {/* Area Grid Card Trainer */}
+                        <section className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                            {trainers.map((trainer) => (
+                                <article 
+                                    key={trainer.id} 
+                                    className="group flex flex-col overflow-hidden rounded-3xl border border-primary-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
+                                >
+                                    {/* Area Gambar dengan Efek Zoom saat Hover */}
+                                    <div className="relative h-72 w-full overflow-hidden bg-gray-100">
+                                        {trainer.photo ? (
+                                        <img 
+                                                src={getImageUrl(trainer.photo, "trainers") || `/assets/photo/photo${(index % 5) + 1}.png`}
+                                                alt={`Foto ${trainer.name}`} 
+                                                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" 
+                                            />
+                                        ) : (
+                                            <div className="flex h-full w-full items-center justify-center text-gray-400">
+                                                <IconUser size={48} />
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Area Konten Text */}
+                                    <div className="flex flex-col space-y-4 p-6">
+                                        <div className="flex items-start justify-between gap-2">
+                                            <h3 className="text-xl font-semibold flex items-center gap-2">
+                                            <IconUser size={16} /> {trainer.name}
+                                            <span className="mx-0.2">●</span>
+                                            <p className="inline-flex items-center gap-2 rounded-full bg-primary-50 px-3 py-1 text-xs font-medium text-primary-700">
+                                                <IconYoga size={16} /> {trainer.expertise || "Spesialisasi trainer belum diisi."}
+                                            </p>
+                                            </h3>
+                                        </div>
+
+                                        {/* Jika Biodata/Info Tambahan Ingin Dinyalakan Nantinya */}
+                                        <div className="space-y-2 border-t border-gray-100 pt-2">
+                                            {/* <p className="text-sm text-wellness-muted">{trainer.gender}, {trainer.age} tahun</p>
+                                            <p className="inline-flex items-start gap-2 text-sm text-wellness-muted">
+                                                <IconMapPin size={16} className="mt-0.5 shrink-0" /> {trainer.address}
+                                            </p> */}
+                                            <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-wellness-muted whitespace-pre-line">
+                                                {trainer.biodata || "Biodata trainer belum diisi."}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </article>
+                            ))}
+                        </section>
+                    </main>
                 </div>
             </>
         );
@@ -495,7 +580,7 @@ export default function Welcome({ currentKey = "home" }) {
                                 ))
                             ) : (
                                 <Card className="text-center md:col-span-3">
-                                    <p className="text-sm text-wellness-muted">Data trainer belum tersedia. Silakan tambahkan dari dashboard.</p>
+                                    <p className="text-sm text-wellness-muted">Data trainer belum tersedia. Silakan tambahkan terlebih dahulu.</p>
                                 </Card>
                             )}
                         </div>

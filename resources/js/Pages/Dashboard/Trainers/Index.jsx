@@ -24,6 +24,11 @@ function TrainerCard({ trainer, isSelected, onSelect, onDelete }) {
                     <Checkbox value={trainer.id} checked={isSelected} onChange={onSelect} />
                 </div>
                 <p className="text-sm text-slate-500 dark:text-slate-400">{trainer.expertise || "Belum diisi"}</p>
+                <div className="space-y-2 border-t border-gray-100 pt-2">
+                                            <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-wellness-muted whitespace-pre-line">
+                                                {trainer.biodata || "Biodata trainer belum diisi."}
+                                            </p>
+                </div>
             </div>
 
             <div className="flex border-t border-slate-100 dark:border-slate-800">
